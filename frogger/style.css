@@ -9,6 +9,7 @@ canvas {
     border-width: 60px;
     border-color: #010101;
     border-style: solid;
+	position: relative;
 }
 
 body {
