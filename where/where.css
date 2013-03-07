@@ -1,17 +1,16 @@
-/*body {
-    background-color: #aaaaff;
-}
-
-table {
-	text-align: center;
-}
-
-td {
-	width: 300px;
-}*/
-
 html { height: 100% }
 
 body { height: 100%; margin: 0px; padding: 0px }
 
 #map_canvas { height: 100% }
+
+#info { 
+  height: 50px;
+  width: 275px;
+  background-color: #FFFFFF;
+  text-align: center;
+  border-color: #555555;
+  border-style: solid;
+  border-radius: 15px;
+  border-width: 1px;
+}
