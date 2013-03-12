@@ -6,12 +6,23 @@
 <head>
 <title>Fecesbook</title>
 <script>
+function initialize()
+{
+  for(key in localStorage)
+  {
+    var ul = document.getElementById("status_updates");
+   	var newLI = document.createElement("li");
+    ul.insertBefore(newLI, ul.firstChild);
+    newLI.innerHTML = localStorage[key];
+  }
+}
 function update_log()
 {
+  var ul = document.getElementById("status_updates");
 	var newLI = document.createElement("LI");
-	document.getElementById("status_updates").appendChild(newLI);
+	ul.insertBefore(newLI, ul.firstChild);
 	var currentTime = new Date();
-	var month = currentTime.getMonth();
+	var month = currentTime.getMonth()+1;
 	var day = currentTime.getDate();
 	var year = currentTime.getFullYear();
 	var hour = currentTime.getHours();
@@ -22,11 +33,12 @@ function update_log()
 	}
 	var message = month + "/" + day + "/" + year + " " + hour + ":" +  min + " - " + document.getElementById("msg").value;
 	newLI.innerHTML = message;
+  localStorage.setItem((new Date().getTime()), message);
 }
 </script>
 </head>
 
-<body>
+<body onload="initialize()">
 	<h1>Fecebook</h1>
 	<div id="nav">
 		<ul>
