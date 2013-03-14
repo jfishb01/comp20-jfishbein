@@ -2,10 +2,10 @@ var ctx;
 var img;
 var dead_img;
 
-//animation timer. Board is drawn every 100 ms
+//animation timer. Board is drawn every 75 ms
 function startTimer()
 {
-  myTimer = setInterval(function() {drawBoard()}, 100);
+  myTimer = setInterval(function() {drawBoard()}, 75);
 }
 
 //draw game canvas
