@@ -2,16 +2,43 @@ var ctx;
 var img;
 var dead_img;
 
+//animation timer. Board is drawn every 100 ms
+function startTimer()
+{
+  myTimer = setInterval(function() {drawBoard()}, 100);
+}
+
+//draw game canvas
+function start_game()
+{
+	initialize();
+
+	canvas = document.getElementById('game');
+	// Check if canvas is supported on browser
+	if (canvas.getContext) {
+		ctx = canvas.getContext('2d');
+    img = new Image();
+    dead_img = new Image();
+    img.src = 'assets/frogger_sprites.png';
+    dead_img.src = 'assets/dead_frog.png';
+    startTimer();
+  }
+	else {
+		alert('Sorry, canvas is not supported on your browser!');
+	}
+}
+
 // Initialize game parameters
 function initialize()
 {
+  //game properties
 	num_lives = 5;
   frogs_home = 0;
 	game_over = false;
-	time = 0;
 	score = 0;
   level = 1;
-	highscore = 0;
+
+  //sprite img properties
   short_log_len = 85;
   med_log_len = 117;
   long_log_len = 178;
@@ -19,6 +46,8 @@ function initialize()
   truck_size = 46;
   car_size = 30;
   vehicle_height = 25;
+  
+  //canvas locations
   log_row1 = 110;
   log_row2 = 140;
   log_row3 = 170;
@@ -29,7 +58,9 @@ function initialize()
   car_row2 = 360;  
   car_row3 = 390;  
   car_row4 = 420;  
-  car_row5 = 450;  
+  car_row5 = 450;
+  
+  //frogger properties
   jump_distance_y = 32;
   jump_distance_x = 15;
   frogger_x = 185;
@@ -37,6 +68,8 @@ function initialize()
   frogger_w = 30;
   frogger_h = 17;
   alive = true;
+ 
+  //animation properties
   speeds = new Array()
   speeds[0] = 1;
   speeds[1] = 3;
@@ -86,12 +119,132 @@ function initialize()
   cars[18] = {sx: 10, sy: 301, w: car_size, h: vehicle_height, dx: 330, dy: car_row5, speed: speeds[10]};
 }
 
-function startTimer()
+//clear the board and draw all image components
+function drawBoard()
 {
-  myTimer = setInterval(function() {drawBoard()}, 100);
+  ctx.clearRect(0, 120, 400, 155);
+  ctx.fillStyle = '#191970';
+  ctx.fillRect (0, 0, 399, 290);
+  ctx.fillStyle = '#000000';
+  ctx.fillRect (0, 290, 399, 276);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.drawImage(img,0,0,398,115,0,0,398,115); //title
+
+  //frogger boundary box
+  fRight = frogger_x+frogger_w;
+  fLeft = frogger_x;
+  fBottom = frogger_y+frogger_h;
+  fTop = frogger_y;
+  
+  //determine if frogger is in a location where he can be drowned
+  var drowned = false;
+  if(fBottom < 285 && fBottom > 115)
+  {
+    drowned = true;
+  }
+  
+  //display all logs
+  for(var i in logs)
+  {
+    logs[i].dx -= logs[i].speed;
+    if(logs[i].dx < -200) {
+      logs[i].dx = 400;
+    }
+    if(logs[i].dx > 400) {
+      logs[i].dx = -200;
+    }
+
+    //get log boundary box
+    lRight = logs[i].dx+logs[i].w;
+    lLeft = logs[i].dx;
+    lBottom = logs[i].dy+log_height;
+    lTop = logs[i].dy;
+
+    //determine if frogger is on a log
+    if(fBottom < 285 && fBottom > 115)
+    {
+      if((fLeft > lLeft && fLeft < lRight) || (fRight > lLeft && fRight < lRight))
+      {
+        if((fBottom < lBottom && fBottom > lTop) || (fTop < lBottom && fTop > lTop))
+        {
+          //if he is, he is not drowned and he will be moved with the log
+          frogger_x -= logs[i].speed;
+          drowned = false
+        }
+      }
+    }
+    //draw the log
+    ctx.drawImage(img,logs[i].sx,logs[i].sy,logs[i].w,logs[i].h,logs[i].dx,logs[i].dy,logs[i].w,logs[i].h);
+  }
+  ctx.drawImage(img,0,114,398,40,0,285,399,40); //purple strip
+  
+  //display all cars
+  for(var i in cars)
+  {
+    cars[i].dx -= cars[i].speed;
+    if(cars[i].dx < -80) {
+      cars[i].dx = 400;
+    }
+    if(cars[i].dx > 400) {
+      cars[i].dx = -80;
+    }
+    
+    //get car boundary box
+    cRight = cars[i].dx+cars[i].w;
+    cLeft = cars[i].dx;
+    cBottom = cars[i].dy+vehicle_height;
+    cTop = cars[i].dy;
+    
+    //determine if a collision has occurred
+    if((fLeft > cLeft && fLeft < cRight) || (fRight > cLeft && fRight < cRight))
+    {
+      if((fBottom < cBottom && fBottom > cTop) || (fTop < cBottom && fTop > cTop))
+      {
+        //if it has, kill frogger
+        alive = false;
+      }
+    }
+    //draw the car image
+    ctx.drawImage(img,cars[i].sx,cars[i].sy,cars[i].w,cars[i].h,cars[i].dx,cars[i].dy,cars[i].w,cars[i].h);
+  }
+	ctx.drawImage(img,0,114,398,40,0,480,399,40); //purple strip
+  //check if frogger is within the boundaries of the board
+  if(fLeft < -5 || fRight > 405)
+  {
+    //if he is not, kill him
+    alive = false;
+  }
+  //if frogger is alive, draw him on the board
+  if(alive && !drowned)
+  {
+    ctx.drawImage(img,13,368,30,17,frogger_x,frogger_y,30,17);
+	}
+  else
+  {
+    //draw the dead frogger
+    ctx.drawImage(dead_img,3,2,23,27,frogger_x,frogger_y,23,27);
+    frogger_death();
+  }
+  //display additional features such as lives, score, and level
+  for(i = 0; i < num_lives; i++)
+	{
+		ctx.drawImage(img,9,332,25,25,15*i,523,18,18); //frogger lives
+	}
+  if(fBottom < 115)
+  {
+    frog_home();
+  }
+	ctx.fillStyle = '#00FF00';
+	ctx.font="18px Arial Bold";
+	ctx.fillText("Score: " + score,2,560);
+  ctx.fillStyle = '#00FF00';
+	ctx.font="20px Arial Bold";
+	ctx.fillText("Level: " + level,160,550);
 }
 
-document.addEventListener("keydown", function(event) {
+//movement of frogger
+document.addEventListener("keydown", function(event)
+{
   //left arrow key
   if (event.keyCode == 37) 
   {
@@ -123,129 +276,7 @@ document.addEventListener("keydown", function(event) {
   drawBoard();
 });
 
-//draw game canvas
-function start_game()
-{
-	initialize();
-
-	canvas = document.getElementById('game');
-	// Check if canvas is supported on browser
-	if (canvas.getContext) {
-		ctx = canvas.getContext('2d');
-    img = new Image();
-    dead_img = new Image();
-    img.src = 'assets/frogger_sprites.png';
-    dead_img.src = 'assets/dead_frog.png';
-    startTimer();
-  }
-	else {
-		alert('Sorry, canvas is not supported on your browser!');
-	}
-}
-
-function drawBoard()
-{
-  ctx.clearRect(0, 120, 400, 155);
-  ctx.fillStyle = '#191970';
-  ctx.fillRect (0, 0, 399, 290);
-  ctx.fillStyle = '#000000';
-  ctx.fillRect (0, 290, 399, 276);
-  ctx.fillStyle = '#FFFFFF';
-  ctx.drawImage(img,0,0,398,115,0,0,398,115); //title
-
-  fRight = frogger_x+frogger_w;
-  fLeft = frogger_x;
-  fBottom = frogger_y+frogger_h;
-  fTop = frogger_y;
-  var drowned = false;
-  if(fBottom < 285 && fBottom > 115)
-  {
-    drowned = true;
-  }
-     
-  for(var i in logs)
-  {
-    logs[i].dx -= logs[i].speed;
-    if(logs[i].dx < -200) {
-      logs[i].dx = 400;
-    }
-    if(logs[i].dx > 400) {
-      logs[i].dx = -200;
-    }
-
-    lRight = logs[i].dx+logs[i].w;
-    lLeft = logs[i].dx;
-    lBottom = logs[i].dy+log_height;
-    lTop = logs[i].dy;
-
-    if(fBottom < 285 && fBottom > 115)
-    {
-      if((fLeft > lLeft && fLeft < lRight) || (fRight > lLeft && fRight < lRight))
-      {
-        if((fBottom < lBottom && fBottom > lTop) || (fTop < lBottom && fTop > lTop))
-        {
-          frogger_x -= logs[i].speed;
-          drowned = false
-        }
-      }
-    }
-    ctx.drawImage(img,logs[i].sx,logs[i].sy,logs[i].w,logs[i].h,logs[i].dx,logs[i].dy,logs[i].w,logs[i].h);
-  }
-  ctx.drawImage(img,0,114,398,40,0,285,399,40); //purple strip
-  for(var i in cars)
-  {
-    cars[i].dx -= cars[i].speed;
-    if(cars[i].dx < -80) {
-      cars[i].dx = 400;
-    }
-    if(cars[i].dx > 400) {
-      cars[i].dx = -80;
-    }
-    
-    cRight = cars[i].dx+cars[i].w;
-    cLeft = cars[i].dx;
-    cBottom = cars[i].dy+vehicle_height;
-    cTop = cars[i].dy;
-    
-    if((fLeft > cLeft && fLeft < cRight) || (fRight > cLeft && fRight < cRight))
-    {
-      if((fBottom < cBottom && fBottom > cTop) || (fTop < cBottom && fTop > cTop))
-      {
-          alive = false;
-      }
-    }
-    ctx.drawImage(img,cars[i].sx,cars[i].sy,cars[i].w,cars[i].h,cars[i].dx,cars[i].dy,cars[i].w,cars[i].h);
-  }
-	ctx.drawImage(img,0,114,398,40,0,480,399,40); //purple strip
-  if(fLeft < -5 || fRight > 405)
-  {
-    alive = false;
-  }
-  if(alive && !drowned)
-  {
-    ctx.drawImage(img,13,368,30,17,frogger_x,frogger_y,30,17); //frogger
-	}
-  else
-  {
-    ctx.drawImage(dead_img,3,2,23,27,frogger_x,frogger_y,23,27); //frogger
-    frogger_death();
-  }
-  for(i = 0; i < num_lives; i++)
-	{
-		ctx.drawImage(img,9,332,25,25,15*i,523,18,18); //frogger lives
-	}
-  if(fBottom < 115)
-  {
-    frog_home();
-  }
-	ctx.fillStyle = '#00FF00';
-	ctx.font="18px Arial Bold";
-	ctx.fillText("Score: " + score,2,560);
-  ctx.fillStyle = '#00FF00';
-	ctx.font="20px Arial Bold";
-	ctx.fillText("Level: " + level,160,550);
-}
-
+//if frogger has died
 function frogger_death()
 {
   document.getElementById("death").play();
@@ -264,6 +295,7 @@ function frogger_death()
   setTimeout(function(){  startTimer()}, 200);
 }
 
+//if frogger makes it home
 function frog_home()
 {
   frogs_home += 1;
@@ -271,6 +303,7 @@ function frog_home()
   {
     score += 1000;
     level += 1;
+    //increase vehicle speeds with changing level
     for(var i in speeds)
     {
       if(speeds[i] > 0)
