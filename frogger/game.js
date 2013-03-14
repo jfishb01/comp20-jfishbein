@@ -46,6 +46,9 @@ function initialize()
   truck_size = 46;
   car_size = 30;
   vehicle_height = 25;
+  lilypad_w = 19;
+  lilypad_h = 19;
+
   
   //canvas locations
   log_row1 = 110;
@@ -59,7 +62,7 @@ function initialize()
   car_row3 = 390;  
   car_row4 = 420;  
   car_row5 = 450;
-  
+  lilypad_row = 90;  
   //frogger properties
   jump_distance_y = 32;
   jump_distance_x = 15;
@@ -103,6 +106,13 @@ function initialize()
   cars[16] = {sx: 10, sy: 301, w: car_size, h: vehicle_height, dx: 90, dy: car_row5, speed: -3};
   cars[17] = {sx: 10, sy: 301, w: car_size, h: vehicle_height, dx: 210, dy: car_row5, speed: -3};
   cars[18] = {sx: 10, sy: 301, w: car_size, h: vehicle_height, dx: 330, dy: car_row5, speed: -3};
+  
+  lilypads = new Array();
+  lilypads[0] = {sx: 138, sy: 234, w: lilypad_w, h: lilypad_h, dx: 18, dy: 78};
+  lilypads[1] = {sx: 138, sy: 234, w: lilypad_w, h: lilypad_h, dx: 102, dy: 78};
+  lilypads[2] = {sx: 138, sy: 234, w: lilypad_w, h: lilypad_h, dx: 186, dy: 78};
+  lilypads[3] = {sx: 138, sy: 234, w: lilypad_w, h: lilypad_h, dx: 270, dy: 78};
+  lilypads[4] = {sx: 138, sy: 234, w: lilypad_w, h: lilypad_h, dx: 354, dy: 78};
 }
 
 //clear the board and draw all image components
@@ -115,7 +125,7 @@ function drawBoard()
   ctx.fillRect (0, 290, 399, 276);
   ctx.fillStyle = '#FFFFFF';
   ctx.drawImage(img,0,0,398,115,0,0,398,115); //title
-
+  
   //frogger boundary box
   fRight = frogger_x+frogger_w;
   fLeft = frogger_x;
@@ -124,9 +134,31 @@ function drawBoard()
   
   //determine if frogger is in a location where he can be drowned
   var drowned = false;
-  if(fBottom < 285 && fBottom > 115)
+  
+  if(fBottom < 285)
   {
     drowned = true;
+  }
+
+  for(var i in lilypads)
+  {
+    if(fBottom <= 110)
+    {
+      var lRight = lilypads[i].dx+lilypads[i].w;
+      var lLeft = lilypads[i].dx;
+      var lBottom = lilypads[i].dy+log_height;
+      var lTop = lilypads[i].dy;
+      
+      if((fLeft > lLeft && fLeft < lRight) || (fRight > lLeft && fRight < lRight))
+      {
+        if((fBottom < lBottom && fBottom > lTop) || (fTop < lBottom && fTop > lTop))
+        {
+          //if he is, he is not drowned and he will be moved with the log
+          drowned = false;
+        }
+      }
+    }
+      ctx.drawImage(img,lilypads[i].sx,lilypads[i].sy,lilypads[i].w,lilypads[i].h,lilypads[i].dx,lilypads[i].dy,lilypads[i].w,lilypads[i].h);
   }
   
   //display all logs
@@ -155,7 +187,7 @@ function drawBoard()
         {
           //if he is, he is not drowned and he will be moved with the log
           frogger_x -= logs[i].speed;
-          drowned = false
+          drowned = false;
         }
       }
     }
@@ -204,6 +236,10 @@ function drawBoard()
   if(alive && !drowned)
   {
     ctx.drawImage(img,13,368,30,17,frogger_x,frogger_y,30,17);
+    if(fBottom <= 110)
+    {
+      frog_home();
+    }
 	}
   else
   {
@@ -216,10 +252,7 @@ function drawBoard()
 	{
 		ctx.drawImage(img,9,332,25,25,15*i,523,18,18); //frogger lives
 	}
-  if(fBottom < 115)
-  {
-    frog_home();
-  }
+
 	ctx.fillStyle = '#00FF00';
 	ctx.font="18px Arial Bold";
 	ctx.fillText("Score: " + score,2,560);
@@ -278,7 +311,8 @@ function frogger_death()
   frogger_x = 185;
   frogger_y = 490;
   clearInterval(myTimer);
-  setTimeout(function(){  startTimer()}, 200);
+  setTimeout(function(){}, 500);
+  setTimeout(function(){  startTimer()}, 500);
 }
 
 //if frogger makes it home
@@ -302,7 +336,8 @@ function frog_home()
   frogger_x = 185;
   frogger_y = 490;
   clearInterval(myTimer);
-  setTimeout(function(){  startTimer()}, 200);
+  setTimeout(function(){}, 500);
+  setTimeout(function(){  startTimer()}, 500);
 }
 
 function updateSpeeds()
