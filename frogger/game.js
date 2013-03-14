@@ -95,17 +95,20 @@ document.addEventListener("keydown", function(event) {
   //left arrow key
   if (event.keyCode == 37) 
   {
+    document.getElementById("move").play();
     frogger_x -= jump_distance_x;
   }
   //up arrow key
   if (event.keyCode == 38) 
-  {
+  {  
+    document.getElementById("move").play();
     frogger_y -= jump_distance_y;
     score += 10;
   }
   //right arrow key
   if (event.keyCode == 39) 
   {
+    document.getElementById("move").play();
     frogger_x += jump_distance_x;
   }
   //down arrow key
@@ -113,6 +116,7 @@ document.addEventListener("keydown", function(event) {
   {
     if(frogger_y < 490)
     {
+      document.getElementById("move").play();
       frogger_y += jump_distance_y;
     }
   }
@@ -244,6 +248,7 @@ function drawBoard()
 
 function frogger_death()
 {
+  document.getElementById("death").play();
   num_lives -= 1;
   if(num_lives < 0)
   {
@@ -291,3 +296,5 @@ function frog_home()
   clearInterval(myTimer);
   setTimeout(function(){  startTimer()}, 200);
 }
+
+
