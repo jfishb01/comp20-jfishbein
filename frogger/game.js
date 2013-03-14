@@ -68,55 +68,41 @@ function initialize()
   frogger_w = 30;
   frogger_h = 17;
   alive = true;
- 
-  //animation properties
-  speeds = new Array()
-  speeds[0] = 1;
-  speeds[1] = 3;
-  speeds[2] = -2;
-  speeds[3] = 2;
-  speeds[4] = -1;
-  speeds[5] = 3;
-  speeds[6] = 4;
-  speeds[7] = -2;
-  speeds[8] = -4;
-  speeds[9] = 3;
-  speeds[10] = -3;
   
   logs = new Array();
-  logs[0] = {sx: 6, sy: 162, w: long_log_len, h: log_height, dx: 0, dy: log_row1, speed: speeds[0]};
-  logs[1] = {sx: 6, sy: 226, w: short_log_len, h: log_height,dx: 350, dy: log_row1, speed: speeds[0]};
-  logs[2] = {sx: 6, sy: 194, w: med_log_len, h: log_height,dx: 130, dy: log_row2, speed: speeds[1]};
-  logs[3] = {sx: 6, sy: 229, w: short_log_len, h: log_height,dx: 390, dy: log_row2, speed: speeds[1]};
-  logs[4] = {sx: 6, sy: 226, w: short_log_len, h: log_height,dx: -70, dy: log_row3, speed: speeds[2]};
-  logs[5] = {sx: 6, sy: 194, w: med_log_len, h: log_height,dx: 200, dy: log_row3, speed: speeds[2]};
-  logs[6] = {sx: 6, sy: 162, w: long_log_len, h: log_height,dx: 70, dy: log_row4, speed: speeds[3]};
-  logs[7] = {sx: 6, sy: 194, w: med_log_len, h: log_height,dx: 320, dy: log_row4, speed: speeds[3]};
-  logs[8] = {sx: 6, sy: 226, w: short_log_len, h: log_height,dx: 10, dy: log_row5, speed: speeds[4]};
-  logs[9] = {sx: 6, sy: 194, w: med_log_len, h: log_height,dx: 280, dy: log_row5, speed: speeds[4]};
-  logs[10] = {sx: 6, sy: 162, w: long_log_len, h: log_height,dx: 20, dy: log_row6, speed: speeds[5]};
-  logs[11] = {sx: 6, sy: 194, w: med_log_len, h: log_height,dx: 350, dy: log_row6, speed: speeds[5]};
+  logs[0] = {sx: 6, sy: 162, w: long_log_len, h: log_height, dx: 0, dy: log_row1, speed: 1};
+  logs[1] = {sx: 6, sy: 226, w: short_log_len, h: log_height,dx: 350, dy: log_row1, speed: 1};
+  logs[2] = {sx: 6, sy: 194, w: med_log_len, h: log_height,dx: 130, dy: log_row2, speed: 3};
+  logs[3] = {sx: 6, sy: 229, w: short_log_len, h: log_height,dx: 390, dy: log_row2, speed: 3};
+  logs[4] = {sx: 6, sy: 226, w: short_log_len, h: log_height,dx: -70, dy: log_row3, speed: -2};
+  logs[5] = {sx: 6, sy: 194, w: med_log_len, h: log_height,dx: 200, dy: log_row3, speed: -2};
+  logs[6] = {sx: 6, sy: 162, w: long_log_len, h: log_height,dx: 70, dy: log_row4, speed: 2};
+  logs[7] = {sx: 6, sy: 194, w: med_log_len, h: log_height,dx: 320, dy: log_row4, speed: 2};
+  logs[8] = {sx: 6, sy: 226, w: short_log_len, h: log_height,dx: 10, dy: log_row5, speed: -1};
+  logs[9] = {sx: 6, sy: 194, w: med_log_len, h: log_height,dx: 280, dy: log_row5, speed: -1};
+  logs[10] = {sx: 6, sy: 162, w: long_log_len, h: log_height,dx: 20, dy: log_row6, speed: 3};
+  logs[11] = {sx: 6, sy: 194, w: med_log_len, h: log_height,dx: 350, dy: log_row6, speed: 3};
 
   cars = new Array();
-  cars[0] = {sx: 106, sy: 302, w: truck_size, h: vehicle_height, dx: 40, dy: car_row1, speed: speeds[6]};
-  cars[1] = {sx: 106, sy: 302, w: truck_size, h: vehicle_height, dx: 200, dy: car_row1, speed: speeds[6]};
-  cars[2] = {sx: 106, sy: 302, w: truck_size, h: vehicle_height, dx: 360, dy: car_row1, speed: speeds[6]};
-  cars[3] = {sx: 46, sy: 263, w: car_size, h: vehicle_height, dx: -50, dy: car_row2, speed: speeds[7]};
-  cars[4] = {sx: 46, sy: 263, w: car_size, h: vehicle_height, dx: 70, dy: car_row2, speed: speeds[7]};
-  cars[5] = {sx: 46, sy: 263, w: car_size, h: vehicle_height, dx: 190, dy: car_row2, speed: speeds[7]};
-  cars[6] = {sx: 46, sy: 263, w: car_size, h: vehicle_height, dx: 310, dy: car_row2, speed: speeds[7]};
-  cars[7] = {sx: 10, sy: 263, w: car_size, h: vehicle_height, dx: -30, dy: car_row3, speed: speeds[8]};
-  cars[8] = {sx: 10, sy: 263, w: car_size, h: vehicle_height, dx: 90, dy: car_row3, speed: speeds[8]};
-  cars[9] = {sx: 10, sy: 263, w: car_size, h: vehicle_height, dx: 210, dy: car_row3, speed: speeds[8]};
-  cars[10] = {sx: 10, sy: 263, w: car_size, h: vehicle_height, dx: 330, dy: car_row3, speed: speeds[8]};
-  cars[11] = {sx: 80, sy: 263, w: car_size, h: vehicle_height, dx: -70, dy: car_row4, speed: speeds[9]};
-  cars[12] = {sx: 80, sy: 263, w: car_size, h: vehicle_height, dx: 50, dy: car_row4, speed: speeds[9]};
-  cars[13] = {sx: 80, sy: 263, w: car_size, h: vehicle_height, dx: 170, dy: car_row4, speed: speeds[9]}; 
-  cars[14] = {sx: 80, sy: 263, w: car_size, h: vehicle_height, dx: 290, dy: car_row4, speed: speeds[9]};
-  cars[15] = {sx: 10, sy: 301, w: car_size, h: vehicle_height, dx: -30, dy: car_row5, speed: speeds[10]};
-  cars[16] = {sx: 10, sy: 301, w: car_size, h: vehicle_height, dx: 90, dy: car_row5, speed: speeds[10]};
-  cars[17] = {sx: 10, sy: 301, w: car_size, h: vehicle_height, dx: 210, dy: car_row5, speed: speeds[10]};
-  cars[18] = {sx: 10, sy: 301, w: car_size, h: vehicle_height, dx: 330, dy: car_row5, speed: speeds[10]};
+  cars[0] = {sx: 106, sy: 302, w: truck_size, h: vehicle_height, dx: 40, dy: car_row1, speed: 4};
+  cars[1] = {sx: 106, sy: 302, w: truck_size, h: vehicle_height, dx: 200, dy: car_row1, speed: 4};
+  cars[2] = {sx: 106, sy: 302, w: truck_size, h: vehicle_height, dx: 360, dy: car_row1, speed: 4};
+  cars[3] = {sx: 46, sy: 263, w: car_size, h: vehicle_height, dx: -50, dy: car_row2, speed: -2};
+  cars[4] = {sx: 46, sy: 263, w: car_size, h: vehicle_height, dx: 70, dy: car_row2, speed: -2};
+  cars[5] = {sx: 46, sy: 263, w: car_size, h: vehicle_height, dx: 190, dy: car_row2, speed: -2};
+  cars[6] = {sx: 46, sy: 263, w: car_size, h: vehicle_height, dx: 310, dy: car_row2, speed: -2};
+  cars[7] = {sx: 10, sy: 263, w: car_size, h: vehicle_height, dx: -30, dy: car_row3, speed: -4};
+  cars[8] = {sx: 10, sy: 263, w: car_size, h: vehicle_height, dx: 90, dy: car_row3, speed: -4};
+  cars[9] = {sx: 10, sy: 263, w: car_size, h: vehicle_height, dx: 210, dy: car_row3, speed: -4};
+  cars[10] = {sx: 10, sy: 263, w: car_size, h: vehicle_height, dx: 330, dy: car_row3, speed: -4};
+  cars[11] = {sx: 80, sy: 263, w: car_size, h: vehicle_height, dx: -70, dy: car_row4, speed: 3};
+  cars[12] = {sx: 80, sy: 263, w: car_size, h: vehicle_height, dx: 50, dy: car_row4, speed: 3};
+  cars[13] = {sx: 80, sy: 263, w: car_size, h: vehicle_height, dx: 170, dy: car_row4, speed: 3}; 
+  cars[14] = {sx: 80, sy: 263, w: car_size, h: vehicle_height, dx: 290, dy: car_row4, speed: 3};
+  cars[15] = {sx: 10, sy: 301, w: car_size, h: vehicle_height, dx: -30, dy: car_row5, speed: -3};
+  cars[16] = {sx: 10, sy: 301, w: car_size, h: vehicle_height, dx: 90, dy: car_row5, speed: -3};
+  cars[17] = {sx: 10, sy: 301, w: car_size, h: vehicle_height, dx: 210, dy: car_row5, speed: -3};
+  cars[18] = {sx: 10, sy: 301, w: car_size, h: vehicle_height, dx: 330, dy: car_row5, speed: -3};
 }
 
 //clear the board and draw all image components
@@ -299,22 +285,11 @@ function frogger_death()
 function frog_home()
 {
   frogs_home += 1;
-  if((frogs_home % 5) == 0)
+  if(((frogs_home % 5) == 0) && (frogs_home > 0))
   {
     score += 1000;
     level += 1;
-    //increase vehicle speeds with changing level
-    for(var i in speeds)
-    {
-      if(speeds[i] > 0)
-      {
-        speeds[i] += 1;
-      }
-      else
-      {
-        speeds[i] -= 1;
-      }
-    }
+    updateSpeeds();
   }
   else
   {
@@ -330,4 +305,28 @@ function frog_home()
   setTimeout(function(){  startTimer()}, 200);
 }
 
-
+function updateSpeeds()
+{
+    for(var i in logs)
+    {
+      if(logs[i].speed > 0)
+      {
+        logs[i].speed += 2;
+      }
+      else
+      {
+        logs[i].speed -= 2;
+      }
+    }
+    for(var i in cars)
+    {
+      if(cars[i].speed > 0)
+      {
+        cars[i].speed += 2;
+      }
+      else
+      {
+        cars[i].speed -= 2;
+      }
+    }
+}
